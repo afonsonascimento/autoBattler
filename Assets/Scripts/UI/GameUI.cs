@@ -3,6 +3,7 @@ using NarutoAutoBattle.Core;
 using NarutoAutoBattle.Economy;
 using NarutoAutoBattle.Input;
 using NarutoAutoBattle.Synergies;
+using NarutoAutoBattle.Units;
 using UnityEngine;
 
 namespace NarutoAutoBattle.View
@@ -16,22 +17,28 @@ namespace NarutoAutoBattle.View
         [SerializeField] PlayerGold playerGold;
         [SerializeField] SynergyService synergyService;
         [SerializeField] UnitDragController dragController;
+        [SerializeField] UnitSellService sellService;
 
         int gold;
         GamePhase phase;
         string combatResultMessage;
         float combatResultTimer;
+        string tooltipText;
         GUIStyle headerStyle;
         GUIStyle shopButtonStyle;
         GUIStyle synergyActiveStyle;
         GUIStyle synergyInactiveStyle;
         GUIStyle resultStyle;
         GUIStyle sellHighlightStyle;
+        GUIStyle tooltipStyle;
 
         void Awake()
         {
             if (dragController == null)
                 dragController = FindFirstObjectByType<UnitDragController>();
+
+            if (sellService == null)
+                sellService = FindFirstObjectByType<UnitSellService>();
 
             playerGold.OnGoldChanged += g => gold = g;
             shopService.OnShopChanged += Repaint;
@@ -87,8 +94,16 @@ namespace NarutoAutoBattle.View
             if (phase == GamePhase.Prep)
             {
                 DrawSynergyPanel();
-                DrawShopPanel();
+                tooltipText = DrawShopPanel();
+                DrawUnitTooltip();
             }
+            else
+            {
+                tooltipText = null;
+            }
+
+            if (!string.IsNullOrEmpty(tooltipText))
+                DrawTooltip(tooltipText);
 
             if (combatResultTimer > 0f && !string.IsNullOrEmpty(combatResultMessage))
             {
@@ -138,7 +153,7 @@ namespace NarutoAutoBattle.View
             return parts.Count > 0 ? string.Join(", ", parts) : "Active";
         }
 
-        void DrawShopPanel()
+        string DrawShopPanel()
         {
             float y = Screen.height - ShopPanelHeight;
             var panelRect = new Rect(0, y, Screen.width, ShopPanelHeight);
@@ -158,12 +173,15 @@ namespace NarutoAutoBattle.View
             float buttonHeight = 60f;
             float rowY = y + 40f;
             float spacing = 8f;
+            string shopTooltip = null;
 
             if (offers.Count == 0)
             {
                 GUI.Label(new Rect(12, rowY, Screen.width - 24, 40),
                     "Shop is empty — run Naruto Auto Battle > Setup MVP Scene.");
             }
+
+            var mousePos = GetGuiMousePosition();
 
             for (int i = 0; i < offers.Count && i < 5; i++)
             {
@@ -182,6 +200,9 @@ namespace NarutoAutoBattle.View
                         : $"{offer.displayName}\n{offer.cost}g · {clans}{jutsu}";
                     if (GUI.Button(rect, label, shopButtonStyle))
                         shopService.TryBuy(i);
+
+                    if (rect.Contains(mousePos))
+                        shopTooltip = UnitTooltipFormatter.FromData(offer);
                 }
                 else
                 {
@@ -201,6 +222,48 @@ namespace NarutoAutoBattle.View
                 GUI.Label(new Rect(Screen.width * 0.5f - 80f, y + 8, 160, 24),
                     "Release to sell", sellHighlightStyle);
             }
+
+            return shopTooltip;
+        }
+
+        void DrawUnitTooltip()
+        {
+            if (dragController == null || dragController.IsDragging)
+                return;
+
+            var unit = dragController.GetPlayerUnitUnderCursor();
+            if (unit == null)
+                return;
+
+            int sellValue = sellService != null ? sellService.GetSellValue(unit) : unit.Data.cost * unit.StarLevel;
+            tooltipText = UnitTooltipFormatter.FromUnit(unit, sellValue);
+        }
+
+        void DrawTooltip(string text)
+        {
+            EnsureStyles();
+
+            var content = new GUIContent(text);
+            var size = tooltipStyle.CalcSize(content);
+            float width = Mathf.Min(size.x + 16f, 320f);
+            float height = size.y + 12f;
+
+            float x = GetGuiMousePosition().x + 14f;
+            float y = GetGuiMousePosition().y + 14f;
+
+            if (x + width > Screen.width)
+                x = Screen.width - width - 8f;
+            if (y + height > Screen.height)
+                y = Screen.height - height - 8f;
+
+            var rect = new Rect(x, y, width, height);
+            GUI.Box(rect, text, tooltipStyle);
+        }
+
+        static Vector2 GetGuiMousePosition()
+        {
+            var pos = UnityEngine.Input.mousePosition;
+            return new Vector2(pos.x, Screen.height - pos.y);
         }
 
         static GUIStyle CreateSellHighlightStyle()
@@ -264,6 +327,18 @@ namespace NarutoAutoBattle.View
                     fontSize = 18,
                     fontStyle = FontStyle.Bold,
                     alignment = TextAnchor.MiddleCenter
+                };
+            }
+
+            if (tooltipStyle == null)
+            {
+                tooltipStyle = new GUIStyle(GUI.skin.box)
+                {
+                    fontSize = 12,
+                    wordWrap = true,
+                    alignment = TextAnchor.UpperLeft,
+                    padding = new RectOffset(8, 8, 6, 6),
+                    normal = { textColor = Color.white }
                 };
             }
         }

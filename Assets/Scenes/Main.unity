@@ -287,7 +287,6 @@ GameObject:
   - component: {fileID: 303858080}
   - component: {fileID: 303858091}
   - component: {fileID: 303858092}
-  - component: {fileID: 303858093}
   m_Layer: 0
   m_Name: GameSystems
   m_TagString: Untagged
@@ -312,6 +311,7 @@ MonoBehaviour:
   playerGold: {fileID: 303858087}
   synergyService: {fileID: 303858091}
   dragController: {fileID: 303858081}
+  sellService: {fileID: 0}
 --- !u!114 &303858081
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -351,6 +351,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: ae57d1d117d7ca441a6c164bbd5d384f, type: 2}
   - {fileID: 11400000, guid: 9015e07dd4189ec45a087b98ba66f458, type: 2}
   - {fileID: 11400000, guid: 33d8b6630db7681469edf943d22f8773, type: 2}
+  - {fileID: 11400000, guid: 4e977611a451dfe4fbbe8a4fab1d3806, type: 2}
+  - {fileID: 11400000, guid: 044be31a45316b24d854cb676328bf78, type: 2}
+  - {fileID: 11400000, guid: 510d67cac02354a4aa445165f9a8b5ab, type: 2}
 --- !u!114 &303858083
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -410,6 +413,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: ae57d1d117d7ca441a6c164bbd5d384f, type: 2}
   - {fileID: 11400000, guid: 9015e07dd4189ec45a087b98ba66f458, type: 2}
   - {fileID: 11400000, guid: 33d8b6630db7681469edf943d22f8773, type: 2}
+  - {fileID: 11400000, guid: 4e977611a451dfe4fbbe8a4fab1d3806, type: 2}
+  - {fileID: 11400000, guid: 044be31a45316b24d854cb676328bf78, type: 2}
+  - {fileID: 11400000, guid: 510d67cac02354a4aa445165f9a8b5ab, type: 2}
   unitSpawner: {fileID: 303858083}
   benchGrid: {fileID: 344160072}
   playerGold: {fileID: 303858087}
@@ -505,18 +511,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NarutoAutoBattle.Economy.UnitSellService
   playerGold: {fileID: 303858087}
   gameManager: {fileID: 303858089}
---- !u!114 &303858093
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 303858079}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7201c10e41a971444a0d02376d248623, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::NarutoAutoBattle.Combat.BoardConsequenceService
 --- !u!1 &344160071
 GameObject:
   m_ObjectHideFlags: 0
@@ -651,7 +645,7 @@ Transform:
   m_GameObject: {fileID: 347676004}
   serializedVersion: 2
   m_LocalRotation: {x: 0.46174863, y: 0, z: 0, w: 0.8870109}
-  m_LocalPosition: {x: 0, y: 9.82, z: -7.11}
+  m_LocalPosition: {x: 0, y: 9.93, z: -6.96}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

@@ -65,26 +65,35 @@ namespace NarutoAutoBattle.Editor
         {
             return new[]
             {
-                CreateClan("Konoha", "konoha", new Color(0.2f, 0.65f, 0.3f),
+                CreateClan("Konoha", "konoha", "Konoha", new Color(0.2f, 0.65f, 0.3f),
                     new ClanData.Threshold { unitCount = 2, attackBonus = 0f, healthBonus = 0.15f },
                     new ClanData.Threshold { unitCount = 4, attackBonus = 0f, healthBonus = 0.30f }),
-                CreateClan("Team 7", "team7", new Color(1f, 0.6f, 0.1f),
+                CreateClan("Team7", "team7", "Team 7", new Color(1f, 0.6f, 0.1f),
                     new ClanData.Threshold { unitCount = 2, attackBonus = 0.20f, healthBonus = 0f },
                     new ClanData.Threshold { unitCount = 3, attackBonus = 0.35f, healthBonus = 0f }),
-                CreateClan("Uchiha", "uchiha", new Color(0.85f, 0.15f, 0.15f),
+                CreateClan("Uchiha", "uchiha", "Uchiha", new Color(0.85f, 0.15f, 0.15f),
                     new ClanData.Threshold { unitCount = 1, attackBonus = 0.25f, healthBonus = 0f },
-                    new ClanData.Threshold { unitCount = 2, attackBonus = 0.50f, healthBonus = 0f })
+                    new ClanData.Threshold { unitCount = 2, attackBonus = 0.50f, healthBonus = 0f }),
+                CreateClan("Hyuga", "hyuga", "Hyuga", new Color(0.85f, 0.85f, 1f),
+                    new ClanData.Threshold { unitCount = 2, attackBonus = 0.15f, healthBonus = 0f },
+                    new ClanData.Threshold { unitCount = 3, attackBonus = 0.25f, healthBonus = 0f }),
+                CreateClan("Taijutsu", "taijutsu", "Taijutsu", new Color(0.2f, 0.75f, 0.35f),
+                    new ClanData.Threshold { unitCount = 2, attackBonus = 0.20f, healthBonus = 0f },
+                    new ClanData.Threshold { unitCount = 3, attackBonus = 0.35f, healthBonus = 0f }),
+                CreateClan("Nara", "nara", "Nara", new Color(0.55f, 0.35f, 0.15f),
+                    new ClanData.Threshold { unitCount = 2, attackBonus = 0.10f, healthBonus = 0.10f },
+                    new ClanData.Threshold { unitCount = 3, attackBonus = 0.20f, healthBonus = 0.20f })
             };
         }
 
-        static ClanData CreateClan(string name, string id, Color color, params ClanData.Threshold[] thresholds)
+        static ClanData CreateClan(string fileName, string id, string displayName, Color color, params ClanData.Threshold[] thresholds)
         {
-            var path = $"{ClanDataPath}/{name}.asset";
+            var path = $"{ClanDataPath}/{fileName}.asset";
             var existing = AssetDatabase.LoadAssetAtPath<ClanData>(path);
             if (existing != null)
             {
                 existing.clanId = id;
-                existing.displayName = name;
+                existing.displayName = displayName;
                 existing.clanColor = color;
                 existing.thresholds = thresholds;
                 EditorUtility.SetDirty(existing);
@@ -93,7 +102,7 @@ namespace NarutoAutoBattle.Editor
 
             var data = ScriptableObject.CreateInstance<ClanData>();
             data.clanId = id;
-            data.displayName = name;
+            data.displayName = displayName;
             data.clanColor = color;
             data.thresholds = thresholds;
             AssetDatabase.CreateAsset(data, path);
@@ -105,6 +114,9 @@ namespace NarutoAutoBattle.Editor
             var konoha = clans[0];
             var team7 = clans[1];
             var uchiha = clans[2];
+            var hyuga = clans[3];
+            var taijutsu = clans[4];
+            var nara = clans[5];
 
             return new[]
             {
@@ -115,7 +127,13 @@ namespace NarutoAutoBattle.Editor
                 CreateUnitWithJutsu("Kakashi", "kakashi", 3, 40, 20, 3f, 0.8f, 2.5f, new Color(0.75f, 0.75f, 0.75f),
                     JutsuType.LightningBlade, "Lightning Blade", 4.5f, 1.8f, 4f, konoha, team7),
                 CreateUnitWithJutsu("Sakura", "sakura", 2, 45, 18, 1.5f, 1.5f, 4f, new Color(1f, 0.4f, 0.6f),
-                    JutsuType.MysticalPalm, "Mystical Palm", 5f, 1.2f, 0f, konoha, team7)
+                    JutsuType.MysticalPalm, "Mystical Palm", 5f, 1.2f, 0f, konoha, team7),
+                CreateUnitWithJutsu("Neji", "neji", 2, 55, 16, 2f, 1.1f, 3f, new Color(0.9f, 0.9f, 1f),
+                    JutsuType.Rasengan, "Eight Trigrams", 4f, 1.3f, 2f, hyuga, konoha),
+                CreateUnitWithJutsu("Rock Lee", "rocklee", 1, 70, 14, 1.2f, 1.8f, 4.5f, new Color(0.15f, 0.55f, 0.2f),
+                    JutsuType.Chidori, "Primary Lotus", 5f, 2.8f, 1.2f, taijutsu, konoha),
+                CreateUnitWithJutsu("Shikamaru", "shikamaru", 3, 45, 12, 4f, 0.7f, 2.5f, new Color(0.45f, 0.35f, 0.2f),
+                    JutsuType.LightningBlade, "Shadow Strangle", 5f, 1.5f, 3.5f, nara, konoha)
             };
         }
 

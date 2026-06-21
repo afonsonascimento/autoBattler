@@ -96,6 +96,18 @@ namespace NarutoAutoBattle.Input
             return hit.collider.GetComponentInParent<Unit>();
         }
 
+        public Unit GetPlayerUnitUnderCursor(bool prepPhaseOnly = true)
+        {
+            var unit = RaycastUnit();
+            if (unit == null || unit.Owner != UnitOwner.Player)
+                return null;
+
+            if (prepPhaseOnly && unit.IsInCombat)
+                return null;
+
+            return unit;
+        }
+
         void UpdateDragPosition()
         {
             var ray = mainCamera.ScreenPointToRay(UnityEngine.Input.mousePosition);

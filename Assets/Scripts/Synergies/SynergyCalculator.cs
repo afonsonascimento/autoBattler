@@ -51,7 +51,7 @@ namespace NarutoAutoBattle.Synergies
 
         public static List<ActiveSynergy> CalculateActiveSynergies(IEnumerable<Unit> units)
         {
-            var clanCounts = new Dictionary<ClanData, int>();
+            var clanUniqueUnits = new Dictionary<ClanData, HashSet<UnitData>>();
 
             foreach (var unit in units)
             {
@@ -63,17 +63,22 @@ namespace NarutoAutoBattle.Synergies
                     if (clan == null)
                         continue;
 
-                    clanCounts.TryGetValue(clan, out int count);
-                    clanCounts[clan] = count + 1;
+                    if (!clanUniqueUnits.TryGetValue(clan, out var uniqueUnits))
+                    {
+                        uniqueUnits = new HashSet<UnitData>();
+                        clanUniqueUnits[clan] = uniqueUnits;
+                    }
+
+                    uniqueUnits.Add(unit.Data);
                 }
             }
 
             var active = new List<ActiveSynergy>();
 
-            foreach (var pair in clanCounts)
+            foreach (var pair in clanUniqueUnits)
             {
                 var clan = pair.Key;
-                int count = pair.Value;
+                int count = pair.Value.Count;
 
                 if (clan.thresholds == null || clan.thresholds.Length == 0)
                     continue;
