@@ -1,0 +1,366 @@
+#if UNITY_EDITOR
+using NarutoAutoBattle.AI;
+using NarutoAutoBattle.Board;
+using NarutoAutoBattle.Combat;
+using NarutoAutoBattle.Core;
+using NarutoAutoBattle.Economy;
+using NarutoAutoBattle.Input;
+using NarutoAutoBattle.Synergies;
+using NarutoAutoBattle.Units;
+using NarutoAutoBattle.View;
+using UnityEditor;
+using UnityEditor.SceneManagement;
+using UnityEngine;
+
+namespace NarutoAutoBattle.Editor
+{
+    public static class NarutoAutoBattleSetup
+    {
+        const string UnitDataPath = "Assets/ScriptableObjects/Units";
+        const string ClanDataPath = "Assets/ScriptableObjects/Clans";
+        const string PrefabPath = "Assets/Prefabs/Units";
+        const string ScenePath = "Assets/Scenes/Main.unity";
+
+        [MenuItem("Naruto Auto Battle/Setup MVP Scene")]
+        public static void SetupMvpScene()
+        {
+            EnsureFolders();
+            var clans = CreateClanAssets();
+            var unitData = CreateUnitDataAssets(clans);
+            var unitPrefab = CreateUnitPrefab();
+            var combatPrefab = CreateCombatUnitPrefab();
+            SetupScene(unitPrefab, combatPrefab, unitData);
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+            EditorSceneManager.OpenScene(ScenePath);
+            Debug.Log("Naruto Auto Battle MVP scene setup complete.");
+        }
+
+        static void EnsureFolders()
+        {
+            CreateFolder("Assets/ScriptableObjects");
+            CreateFolder(UnitDataPath);
+            CreateFolder(ClanDataPath);
+            CreateFolder("Assets/Prefabs");
+            CreateFolder(PrefabPath);
+        }
+
+        static void CreateFolder(string path)
+        {
+            if (AssetDatabase.IsValidFolder(path))
+                return;
+
+            var parts = path.Split('/');
+            var current = parts[0];
+            for (int i = 1; i < parts.Length; i++)
+            {
+                var next = current + "/" + parts[i];
+                if (!AssetDatabase.IsValidFolder(next))
+                    AssetDatabase.CreateFolder(current, parts[i]);
+                current = next;
+            }
+        }
+
+        static ClanData[] CreateClanAssets()
+        {
+            return new[]
+            {
+                CreateClan("Konoha", "konoha", new Color(0.2f, 0.65f, 0.3f),
+                    new ClanData.Threshold { unitCount = 2, attackBonus = 0f, healthBonus = 0.15f },
+                    new ClanData.Threshold { unitCount = 4, attackBonus = 0f, healthBonus = 0.30f }),
+                CreateClan("Team 7", "team7", new Color(1f, 0.6f, 0.1f),
+                    new ClanData.Threshold { unitCount = 2, attackBonus = 0.20f, healthBonus = 0f },
+                    new ClanData.Threshold { unitCount = 3, attackBonus = 0.35f, healthBonus = 0f }),
+                CreateClan("Uchiha", "uchiha", new Color(0.85f, 0.15f, 0.15f),
+                    new ClanData.Threshold { unitCount = 1, attackBonus = 0.25f, healthBonus = 0f },
+                    new ClanData.Threshold { unitCount = 2, attackBonus = 0.50f, healthBonus = 0f })
+            };
+        }
+
+        static ClanData CreateClan(string name, string id, Color color, params ClanData.Threshold[] thresholds)
+        {
+            var path = $"{ClanDataPath}/{name}.asset";
+            var existing = AssetDatabase.LoadAssetAtPath<ClanData>(path);
+            if (existing != null)
+            {
+                existing.clanId = id;
+                existing.displayName = name;
+                existing.clanColor = color;
+                existing.thresholds = thresholds;
+                EditorUtility.SetDirty(existing);
+                return existing;
+            }
+
+            var data = ScriptableObject.CreateInstance<ClanData>();
+            data.clanId = id;
+            data.displayName = name;
+            data.clanColor = color;
+            data.thresholds = thresholds;
+            AssetDatabase.CreateAsset(data, path);
+            return data;
+        }
+
+        static UnitData[] CreateUnitDataAssets(ClanData[] clans)
+        {
+            var konoha = clans[0];
+            var team7 = clans[1];
+            var uchiha = clans[2];
+
+            return new[]
+            {
+                CreateUnitWithJutsu("Naruto", "naruto", 1, 80, 12, 1.5f, 1f, 3f, new Color(1f, 0.55f, 0.1f),
+                    JutsuType.Rasengan, "Rasengan", 4f, 1.4f, 2.5f, konoha, team7),
+                CreateUnitWithJutsu("Sasuke", "sasuke", 2, 50, 15, 4f, 1.2f, 3f, new Color(0.2f, 0.25f, 0.7f),
+                    JutsuType.Chidori, "Chidori", 3.5f, 2.5f, 1.5f, konoha, uchiha, team7),
+                CreateUnitWithJutsu("Kakashi", "kakashi", 3, 40, 20, 3f, 0.8f, 2.5f, new Color(0.75f, 0.75f, 0.75f),
+                    JutsuType.LightningBlade, "Lightning Blade", 4.5f, 1.8f, 4f, konoha, team7),
+                CreateUnitWithJutsu("Sakura", "sakura", 2, 45, 18, 1.5f, 1.5f, 4f, new Color(1f, 0.4f, 0.6f),
+                    JutsuType.MysticalPalm, "Mystical Palm", 5f, 1.2f, 0f, konoha, team7)
+            };
+        }
+
+        static UnitData CreateUnitWithJutsu(string name, string id, int cost, int hp, int atk,
+            float range, float atkSpeed, float moveSpeed, Color color,
+            JutsuType jutsuType, string jutsuName, float jutsuCooldown, float jutsuPower, float jutsuRadius,
+            params ClanData[] clans)
+        {
+            var data = CreateUnitData(name, id, cost, hp, atk, range, atkSpeed, moveSpeed, color, clans);
+            data.jutsuType = jutsuType;
+            data.jutsuName = jutsuName;
+            data.jutsuCooldown = jutsuCooldown;
+            data.jutsuPower = jutsuPower;
+            data.jutsuRadius = jutsuRadius;
+            EditorUtility.SetDirty(data);
+            return data;
+        }
+
+        static UnitData CreateUnitData(string name, string id, int cost, int hp, int atk,
+            float range, float atkSpeed, float moveSpeed, Color color, params ClanData[] clans)
+        {
+            var path = $"{UnitDataPath}/{name}.asset";
+            var existing = AssetDatabase.LoadAssetAtPath<UnitData>(path);
+            if (existing != null)
+            {
+                existing.unitId = id;
+                existing.displayName = name;
+                existing.cost = cost;
+                existing.baseHealth = hp;
+                existing.baseAttack = atk;
+                existing.attackRange = range;
+                existing.attackSpeed = atkSpeed;
+                existing.moveSpeed = moveSpeed;
+                existing.unitColor = color;
+                existing.clans = clans;
+                EditorUtility.SetDirty(existing);
+                return existing;
+            }
+
+            var data = ScriptableObject.CreateInstance<UnitData>();
+            data.unitId = id;
+            data.displayName = name;
+            data.cost = cost;
+            data.baseHealth = hp;
+            data.baseAttack = atk;
+            data.attackRange = range;
+            data.attackSpeed = atkSpeed;
+            data.moveSpeed = moveSpeed;
+            data.unitColor = color;
+            data.clans = clans;
+            AssetDatabase.CreateAsset(data, path);
+            return data;
+        }
+
+        static GameObject CreateUnitPrefab()
+        {
+            var path = $"{PrefabPath}/Unit.prefab";
+            var existing = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+            if (existing != null)
+                return existing;
+
+            var go = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+            go.name = "Unit";
+            Object.DestroyImmediate(go.GetComponent<CapsuleCollider>());
+
+            var col = go.AddComponent<CapsuleCollider>();
+            col.height = 2f;
+            col.radius = 0.4f;
+
+            go.AddComponent<Unit>();
+
+            var star = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            star.name = "StarIndicator";
+            star.transform.SetParent(go.transform);
+            star.transform.localPosition = new Vector3(0f, 1.2f, 0f);
+            star.transform.localScale = Vector3.one * 0.3f;
+            Object.DestroyImmediate(star.GetComponent<SphereCollider>());
+
+            var prefab = PrefabUtility.SaveAsPrefabAsset(go, path);
+            Object.DestroyImmediate(go);
+            return prefab;
+        }
+
+        static GameObject CreateCombatUnitPrefab()
+        {
+            var path = $"{PrefabPath}/CombatUnit.prefab";
+            var existing = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+            if (existing != null)
+                return existing;
+
+            var go = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+            go.name = "CombatUnit";
+            Object.DestroyImmediate(go.GetComponent<CapsuleCollider>());
+            go.AddComponent<Health>();
+            go.AddComponent<CombatUnit>();
+            go.AddComponent<CombatFeedback>();
+            go.AddComponent<WorldHealthBar>();
+
+            var prefab = PrefabUtility.SaveAsPrefabAsset(go, path);
+            Object.DestroyImmediate(go);
+            return prefab;
+        }
+
+        static void SetupScene(GameObject unitPrefab, GameObject combatPrefab, UnitData[] unitData)
+        {
+            var scene = EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+
+            var cam = Camera.main;
+            if (cam != null)
+            {
+                cam.transform.position = new Vector3(0f, 12f, -4f);
+                cam.transform.rotation = Quaternion.Euler(55f, 0f, 0f);
+            }
+
+            var boardGo = GetOrCreate("Board");
+            var boardGrid = GetOrAdd<BoardGrid>(boardGo);
+
+            var benchGo = GetOrCreate("Bench");
+            var benchGrid = GetOrAdd<BenchGrid>(benchGo);
+
+            var systemsGo = GetOrCreate("GameSystems");
+            var gameManager = GetOrAdd<GameManager>(systemsGo);
+            var roundManager = GetOrAdd<RoundManager>(systemsGo);
+            var playerGold = GetOrAdd<PlayerGold>(systemsGo);
+            var shopService = GetOrAdd<ShopService>(systemsGo);
+            var sellService = GetOrAdd<UnitSellService>(systemsGo);
+            var combatController = GetOrAdd<CombatController>(systemsGo);
+            var mergeService = GetOrAdd<UnitMergeService>(systemsGo);
+            var unitSpawner = GetOrAdd<UnitSpawner>(systemsGo);
+            var enemyGen = GetOrAdd<EnemyBoardGenerator>(systemsGo);
+            var dragController = GetOrAdd<UnitDragController>(systemsGo);
+            var synergyService = GetOrAdd<SynergyService>(systemsGo);
+            var ui = GetOrAdd<GameUI>(systemsGo);
+
+            SetRef(unitSpawner, "unitPrefab", unitPrefab);
+            SetRef(mergeService, "boardGrid", boardGrid);
+            SetRef(mergeService, "benchGrid", benchGrid);
+            SetRef(shopService, "unitPool", unitData);
+            SetRef(shopService, "unitSpawner", unitSpawner);
+            SetRef(shopService, "benchGrid", benchGrid);
+            SetRef(shopService, "playerGold", playerGold);
+            SetRef(sellService, "playerGold", playerGold);
+            SetRef(sellService, "gameManager", gameManager);
+            SetRef(combatController, "boardGrid", boardGrid);
+            SetRef(combatController, "combatUnitPrefab", combatPrefab);
+            SetRef(combatController, "synergyService", synergyService);
+            SetRef(roundManager, "boardGrid", boardGrid);
+            SetRef(roundManager, "playerGold", playerGold);
+            SetRef(roundManager, "shopService", shopService);
+            SetRef(roundManager, "enemyBoardGenerator", enemyGen);
+            SetRef(enemyGen, "boardGrid", boardGrid);
+            SetRef(enemyGen, "unitSpawner", unitSpawner);
+            SetRef(enemyGen, "unitPool", unitData);
+            SetRef(gameManager, "boardGrid", boardGrid);
+            SetRef(gameManager, "benchGrid", benchGrid);
+            SetRef(gameManager, "playerGold", playerGold);
+            SetRef(gameManager, "shopService", shopService);
+            SetRef(gameManager, "combatController", combatController);
+            SetRef(gameManager, "roundManager", roundManager);
+            SetRef(gameManager, "dragController", dragController);
+            SetRef(gameManager, "enemyBoardGenerator", enemyGen);
+            SetRef(dragController, "mainCamera", cam);
+            SetRef(dragController, "boardGrid", boardGrid);
+            SetRef(dragController, "benchGrid", benchGrid);
+            SetRef(dragController, "sellService", sellService);
+            SetRef(ui, "gameManager", gameManager);
+            SetRef(ui, "shopService", shopService);
+            SetRef(ui, "playerGold", playerGold);
+            SetRef(ui, "synergyService", synergyService);
+            SetRef(ui, "dragController", dragController);
+            SetRef(synergyService, "boardGrid", boardGrid);
+            SetRef(synergyService, "benchGrid", benchGrid);
+
+            CreateFloor();
+
+            EditorSceneManager.MarkSceneDirty(scene);
+            EditorSceneManager.SaveScene(scene);
+        }
+
+        static void CreateFloor()
+        {
+            var floor = GetOrCreate("Floor");
+            var meshFilter = GetOrAdd<MeshFilter>(floor);
+            var meshRenderer = GetOrAdd<MeshRenderer>(floor);
+
+            if (meshFilter.sharedMesh == null)
+            {
+                var plane = GameObject.CreatePrimitive(PrimitiveType.Plane);
+                meshFilter.sharedMesh = plane.GetComponent<MeshFilter>().sharedMesh;
+                Object.DestroyImmediate(plane);
+            }
+
+            floor.transform.position = Vector3.zero;
+            floor.transform.localScale = new Vector3(2f, 1f, 2f);
+
+            var mat = AssetDatabase.GetBuiltinExtraResource<Material>("Default-Diffuse.mat");
+            if (mat != null)
+                meshRenderer.sharedMaterial = mat;
+        }
+
+        static GameObject GetOrCreate(string name, Transform parent = null)
+        {
+            Transform search = parent != null ? parent.Find(name) : GameObject.Find(name)?.transform;
+            if (search != null)
+                return search.gameObject;
+
+            var go = new GameObject(name);
+            if (parent != null)
+                go.transform.SetParent(parent, false);
+            return go;
+        }
+
+        static T GetOrAdd<T>(GameObject go) where T : Component
+        {
+            return go.GetComponent<T>() ?? go.AddComponent<T>();
+        }
+
+        static void SetRef(Object target, string fieldName, Object value)
+        {
+            var so = new SerializedObject(target);
+            var prop = so.FindProperty(fieldName);
+            if (prop != null)
+            {
+                prop.objectReferenceValue = value;
+                so.ApplyModifiedPropertiesWithoutUndo();
+            }
+        }
+
+        static void SetRef(Object target, string fieldName, Object[] values)
+        {
+            var so = new SerializedObject(target);
+            var prop = so.FindProperty(fieldName);
+            if (prop == null)
+            {
+                Debug.LogWarning($"Could not find array property '{fieldName}' on {target.name}");
+                return;
+            }
+
+            prop.arraySize = values.Length;
+            for (int i = 0; i < values.Length; i++)
+                prop.GetArrayElementAtIndex(i).objectReferenceValue = values[i];
+
+            so.ApplyModifiedPropertiesWithoutUndo();
+            EditorUtility.SetDirty(target);
+        }
+    }
+}
+#endif

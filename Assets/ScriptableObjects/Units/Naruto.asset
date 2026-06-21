@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 177207edf957c7341b2b21f961cdb839, type: 3}
+  m_Name: Naruto
+  m_EditorClassIdentifier: Assembly-CSharp::NarutoAutoBattle.Units.UnitData
+  unitId: naruto
+  displayName: Naruto
+  cost: 1
+  baseHealth: 80
+  baseAttack: 12
+  attackRange: 1.5
+  attackSpeed: 1
+  moveSpeed: 3
+  unitColor: {r: 1, g: 0.55, b: 0.1, a: 1}
+  clans:
+  - {fileID: 11400000, guid: defc028b51bc66f46b7903015fc2f336, type: 2}
+  - {fileID: 11400000, guid: fbef81d3edd3853479e612bc6551c1f3, type: 2}
+  jutsuType: 1
+  jutsuName: Rasengan
+  jutsuCooldown: 4
+  jutsuPower: 1.4
+  jutsuRadius: 2.5
