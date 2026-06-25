@@ -219,5 +219,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MergeTactics.Units.Unit
   data: {fileID: 0}
-  meshRenderer: {fileID: 0}
+  meshRenderer: {fileID: 1878909675129270828}
   starIndicator: {fileID: 0}

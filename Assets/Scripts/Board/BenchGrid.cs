@@ -36,7 +36,7 @@ namespace NarutoAutoBattle.Board
             for (int i = 0; i < slotCount; i++)
             {
                 var coords = new Vector2Int(i, 0);
-                var worldPos = new Vector3(startX + i * cellSize, 0.5f, benchZ);
+                var worldPos = new Vector3(startX + i * cellSize, 0.8f, benchZ);
                 slots.Add(new GridSlot(coords, worldPos, GridZone.Bench));
             }
         }

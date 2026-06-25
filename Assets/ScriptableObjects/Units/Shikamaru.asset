@@ -21,6 +21,9 @@ MonoBehaviour:
   attackSpeed: 0.7
   moveSpeed: 2.5
   unitColor: {r: 0.45, g: 0.35, b: 0.2, a: 1}
+  visualPrefab: {fileID: 7799594553687700162, guid: 4f15ce591c3a2b44aa01317b07bc160a, type: 3}
+  visualScale: 1
+  visualOffset: {x: 0, y: 0, z: 0}
   clans:
   - {fileID: 11400000, guid: 3ce2269330b5573438c7db7116df67ca, type: 2}
   - {fileID: 11400000, guid: defc028b51bc66f46b7903015fc2f336, type: 2}

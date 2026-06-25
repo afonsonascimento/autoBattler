@@ -9,10 +9,13 @@ namespace NarutoAutoBattle.Units
     {
         const float StarScalePerLevel = 0.15f;
         const float StatMultiplierPerStar = 1.8f;
+        public const float VisualLocalY = -1f;
 
         [SerializeField] UnitData data;
         [SerializeField] Renderer meshRenderer;
         [SerializeField] Transform starIndicator;
+
+        GameObject visualInstance;
 
         UnitOwner owner = UnitOwner.Player;
         int starLevel = 1;
@@ -40,6 +43,12 @@ namespace NarutoAutoBattle.Units
             owner = unitOwner;
             starLevel = Mathf.Clamp(stars, 1, 3);
             ApplyVisuals();
+            ApplyFacing();
+        }
+
+        public static Quaternion GetFacingRotation(UnitOwner unitOwner)
+        {
+            return Quaternion.Euler(0f, unitOwner == UnitOwner.Enemy ? 180f : 0f, 0f);
         }
 
         public void SetSlot(GridSlot slot)
@@ -93,11 +102,33 @@ namespace NarutoAutoBattle.Units
 
         void SetVisible(bool visible)
         {
-            foreach (var renderer in GetComponentsInChildren<Renderer>(true))
-                renderer.enabled = visible;
+            if (!visible)
+            {
+                foreach (var renderer in GetComponentsInChildren<Renderer>(true))
+                    renderer.enabled = false;
+            }
+            else
+            {
+                ApplyRendererVisibility();
+            }
 
             foreach (var col in GetComponentsInChildren<Collider>(true))
                 col.enabled = visible;
+        }
+
+        void ApplyRendererVisibility()
+        {
+            if (meshRenderer != null)
+                meshRenderer.enabled = visualInstance == null;
+
+            if (visualInstance != null)
+            {
+                foreach (var renderer in visualInstance.GetComponentsInChildren<Renderer>(true))
+                    renderer.enabled = true;
+            }
+
+            if (starIndicator != null)
+                starIndicator.gameObject.SetActive(starLevel > 1);
         }
 
         float GetStarMultiplier()
@@ -107,25 +138,40 @@ namespace NarutoAutoBattle.Units
 
         void ApplyVisuals()
         {
-            if (meshRenderer != null)
+            if (visualInstance != null)
             {
-                var mat = meshRenderer.material;
-                mat.color = data != null ? data.unitColor : Color.white;
-            }
-
-            if (starIndicator != null)
-            {
-                starIndicator.gameObject.SetActive(starLevel > 1);
-                starIndicator.localScale = Vector3.one * (1f + (starLevel - 1) * StarScalePerLevel);
+                Destroy(visualInstance);
+                visualInstance = null;
             }
 
             transform.localScale = Vector3.one * (0.8f + (starLevel - 1) * StarScalePerLevel);
+
+            if (data != null && data.visualPrefab != null)
+            {
+                visualInstance = Instantiate(data.visualPrefab, transform);
+                visualInstance.transform.localPosition = new Vector3(data.visualOffset.x, VisualLocalY, data.visualOffset.z);
+                visualInstance.transform.localRotation = Quaternion.identity;
+                visualInstance.transform.localScale = Vector3.one * data.visualScale;
+            }
+
+            ApplyRendererVisibility();
+
+            if (visualInstance == null && meshRenderer != null && data != null)
+                meshRenderer.material.color = data.unitColor;
+
+            if (starIndicator != null)
+                starIndicator.localScale = Vector3.one * (1f + (starLevel - 1) * StarScalePerLevel);
+        }
+
+        void ApplyFacing()
+        {
+            transform.rotation = GetFacingRotation(owner);
         }
 
         void Awake()
         {
             if (meshRenderer == null)
-                meshRenderer = GetComponentInChildren<Renderer>();
+                meshRenderer = GetComponent<Renderer>();
 
             if (starIndicator == null)
             {

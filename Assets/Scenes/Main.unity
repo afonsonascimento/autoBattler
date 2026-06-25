@@ -311,7 +311,7 @@ MonoBehaviour:
   playerGold: {fileID: 303858087}
   synergyService: {fileID: 303858091}
   dragController: {fileID: 303858081}
-  sellService: {fileID: 0}
+  sellService: {fileID: 303858092}
 --- !u!114 &303858081
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -328,7 +328,6 @@ MonoBehaviour:
   boardGrid: {fileID: 65923984}
   benchGrid: {fileID: 344160072}
   sellService: {fileID: 303858092}
-  dragHeight: 1.5
   unitLayer:
     serializedVersion: 2
     m_Bits: 4294967295

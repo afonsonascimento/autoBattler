@@ -93,11 +93,26 @@ namespace NarutoAutoBattle.Combat
             if (go.GetComponent<WorldHealthBar>() == null)
                 go.AddComponent<WorldHealthBar>();
 
-            var renderer = go.GetComponent<Renderer>() ?? go.GetComponentInChildren<Renderer>();
-            if (renderer != null && unit.Data != null)
-                renderer.material.color = unit.Data.unitColor;
-
             go.transform.localScale = unit.transform.localScale;
+
+            if (unit.Data != null && unit.Data.visualPrefab != null)
+            {
+                var visual = Instantiate(unit.Data.visualPrefab, go.transform);
+                visual.transform.localPosition = new Vector3(unit.Data.visualOffset.x, Unit.VisualLocalY, unit.Data.visualOffset.z);
+                visual.transform.localRotation = Quaternion.identity;
+                visual.transform.localScale = Vector3.one * unit.Data.visualScale;
+
+                var placeholder = go.GetComponent<Renderer>();
+                if (placeholder != null)
+                    placeholder.enabled = false;
+            }
+            else
+            {
+                var renderer = go.GetComponent<Renderer>() ?? go.GetComponentInChildren<Renderer>();
+                if (renderer != null && unit.Data != null)
+                    renderer.material.color = unit.Data.unitColor;
+            }
+
             return combatUnit;
         }
 

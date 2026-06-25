@@ -13,13 +13,14 @@ namespace NarutoAutoBattle.Input
         [SerializeField] BoardGrid boardGrid;
         [SerializeField] BenchGrid benchGrid;
         [SerializeField] UnitSellService sellService;
-        [SerializeField] float dragHeight = 1.5f;
         [SerializeField] LayerMask unitLayer = ~0;
 
         Unit draggedUnit;
         GridSlot dragOriginSlot;
         bool draggingEnabled = true;
         Plane dragPlane;
+        Vector3 dragPivotOffset;
+        float dragPlaneHeight;
 
         public bool DraggingEnabled
         {
@@ -82,6 +83,44 @@ namespace NarutoAutoBattle.Input
 
             draggedUnit = unit;
             dragOriginSlot = unit.CurrentSlot;
+            dragPlaneHeight = unit.transform.position.y;
+            dragPlane = new Plane(Vector3.up, new Vector3(0f, dragPlaneHeight, 0f));
+            dragPivotOffset = GetDragFollowOffset(unit);
+
+            UpdateDragPosition();
+        }
+
+        static Vector3 GetDragFollowOffset(Unit unit)
+        {
+            var renderers = unit.GetComponentsInChildren<Renderer>();
+            if (renderers.Length == 0)
+                return Vector3.zero;
+
+            var hasBounds = false;
+            var bounds = new Bounds();
+
+            foreach (var renderer in renderers)
+            {
+                if (!renderer.enabled || renderer.transform.name == "StarIndicator")
+                    continue;
+
+                if (!hasBounds)
+                {
+                    bounds = renderer.bounds;
+                    hasBounds = true;
+                }
+                else
+                {
+                    bounds.Encapsulate(renderer.bounds);
+                }
+            }
+
+            if (!hasBounds)
+                return Vector3.zero;
+
+            var offset = bounds.center - unit.transform.position;
+            offset.y = 0f;
+            return offset;
         }
 
         Unit RaycastUnit()
@@ -115,7 +154,10 @@ namespace NarutoAutoBattle.Input
                 return;
 
             var point = ray.GetPoint(distance);
-            draggedUnit.transform.position = new Vector3(point.x, dragHeight, point.z);
+            draggedUnit.transform.position = new Vector3(
+                point.x - dragPivotOffset.x,
+                dragPlaneHeight,
+                point.z - dragPivotOffset.z);
         }
 
         void EndDrag()
@@ -128,7 +170,7 @@ namespace NarutoAutoBattle.Input
             }
 
             var worldPos = draggedUnit.transform.position;
-            worldPos.y = 0.5f;
+            worldPos.y = dragOriginSlot != null ? dragOriginSlot.WorldPosition.y : dragPlaneHeight;
 
             var targetSlot = FindNearestValidSlot(worldPos);
 

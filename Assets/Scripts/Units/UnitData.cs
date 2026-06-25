@@ -15,6 +15,9 @@ namespace NarutoAutoBattle.Units
         public float attackSpeed = 1f;
         public float moveSpeed = 3f;
         public Color unitColor = Color.white;
+        public GameObject visualPrefab;
+        public float visualScale = 1f;
+        public Vector3 visualOffset;
         public ClanData[] clans;
 
         [Header("Jutsu")]
