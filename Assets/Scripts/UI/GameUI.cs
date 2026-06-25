@@ -18,12 +18,14 @@ namespace NarutoAutoBattle.View
         [SerializeField] SynergyService synergyService;
         [SerializeField] UnitDragController dragController;
         [SerializeField] UnitSellService sellService;
+        [SerializeField] PlayerEconomy playerEconomy;
 
         int gold;
         GamePhase phase;
         string combatResultMessage;
         float combatResultTimer;
         string tooltipText;
+        string economyLine = string.Empty;
         GUIStyle headerStyle;
         GUIStyle shopButtonStyle;
         GUIStyle synergyActiveStyle;
@@ -40,9 +42,18 @@ namespace NarutoAutoBattle.View
             if (sellService == null)
                 sellService = FindFirstObjectByType<UnitSellService>();
 
-            playerGold.OnGoldChanged += g => gold = g;
+            if (playerEconomy == null)
+                playerEconomy = FindFirstObjectByType<PlayerEconomy>();
+
+            playerGold.OnGoldChanged += HandleGoldChanged;
             shopService.OnShopChanged += Repaint;
             gameManager.OnPhaseChanged += HandlePhaseChanged;
+
+            if (playerEconomy != null)
+            {
+                playerEconomy.OnStateChanged += RefreshEconomyLine;
+                RefreshEconomyLine();
+            }
         }
 
         void Start()
@@ -57,24 +68,51 @@ namespace NarutoAutoBattle.View
                 combatResultTimer -= Time.deltaTime;
         }
 
+        void HandleGoldChanged(int newGold)
+        {
+            gold = newGold;
+            RefreshEconomyLine();
+        }
+
         void OnDestroy()
         {
             if (playerGold != null)
-                playerGold.OnGoldChanged -= g => gold = g;
+                playerGold.OnGoldChanged -= HandleGoldChanged;
             if (shopService != null)
                 shopService.OnShopChanged -= Repaint;
             if (gameManager != null)
                 gameManager.OnPhaseChanged -= HandlePhaseChanged;
+            if (playerEconomy != null)
+                playerEconomy.OnStateChanged -= RefreshEconomyLine;
+        }
+
+        void RefreshEconomyLine()
+        {
+            if (playerEconomy == null)
+            {
+                economyLine = string.Empty;
+                return;
+            }
+
+            var streak = playerEconomy.GetStreakText();
+            economyLine = $"{playerEconomy.GetLevelProgressText()}  |  +{playerEconomy.PredictedInterest}g interest";
+            if (!string.IsNullOrEmpty(streak))
+                economyLine += $"  |  {streak}";
         }
 
         void HandlePhaseChanged(GamePhase newPhase)
         {
             phase = newPhase;
 
-            if (newPhase == GamePhase.RoundEnd)
+            if (newPhase == GamePhase.Prep && gameManager.RoundManager != null)
             {
-                combatResultMessage = gameManager.LastCombatWon ? "Victory! +1 bonus gold" : "Defeat!";
-                combatResultTimer = 2f;
+                var income = gameManager.RoundManager.LastRoundIncome;
+                if (income.TotalGold > 0)
+                {
+                    string prefix = gameManager.LastCombatWon ? "Victory! " : "Defeat. ";
+                    combatResultMessage = prefix + income;
+                    combatResultTimer = 2.5f;
+                }
             }
         }
 
@@ -87,9 +125,14 @@ namespace NarutoAutoBattle.View
 
             var round = gameManager.RoundManager != null ? gameManager.RoundManager.RoundNumber : 1;
             var losses = gameManager.RoundManager != null ? gameManager.RoundManager.PlayerLosses : 0;
-            GUI.Label(new Rect(10, 10, 600, 28),
+            GUI.Label(new Rect(10, 10, Screen.width - 20, 28),
                 $"Naruto Auto Battle  |  Gold: {gold}  |  Round: {round}  |  Losses: {losses}/5  |  {phase}",
                 headerStyle);
+
+            if (!string.IsNullOrEmpty(economyLine))
+            {
+                GUI.Label(new Rect(10, 32, Screen.width - 20, 22), economyLine, synergyInactiveStyle);
+            }
 
             if (phase == GamePhase.Prep)
             {
@@ -120,7 +163,7 @@ namespace NarutoAutoBattle.View
             var synergies = synergyService.GetPlayerActiveSynergies();
             float panelWidth = 220f;
             float x = Screen.width - panelWidth - 10f;
-            float y = 40f;
+            float y = 58f;
 
             GUI.Box(new Rect(x, y, panelWidth, 24f), "Active Clans");
             y += 28f;
@@ -165,8 +208,8 @@ namespace NarutoAutoBattle.View
             else
                 GUI.Box(panelRect, GUIContent.none);
 
-            GUI.Label(new Rect(12, y + 8, 520, 24),
-                "Shop  (drag unit here or right-click to sell)", headerStyle);
+            GUI.Label(new Rect(12, y + 8, 720, 24),
+                $"Shop  (Lv.{playerEconomy?.Level ?? 1} odds)  — drag unit here or right-click to sell", headerStyle);
 
             var offers = shopService.CurrentOffers;
             float buttonWidth = 130f;

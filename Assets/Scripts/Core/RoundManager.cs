@@ -7,11 +7,9 @@ namespace NarutoAutoBattle.Core
 {
     public class RoundManager : MonoBehaviour
     {
-        const int BaseRoundGold = 5;
-        const int WinBonusGold = 1;
-
         [SerializeField] BoardGrid boardGrid;
         [SerializeField] PlayerGold playerGold;
+        [SerializeField] PlayerEconomy playerEconomy;
         [SerializeField] ShopService shopService;
         [SerializeField] EnemyBoardGenerator enemyBoardGenerator;
 
@@ -20,10 +18,22 @@ namespace NarutoAutoBattle.Core
 
         public int RoundNumber => roundNumber;
         public int PlayerLosses => playerLosses;
+        public RoundIncomeBreakdown LastRoundIncome =>
+            playerEconomy != null ? playerEconomy.LastIncome : RoundIncomeBreakdown.Empty;
 
         public void StartNewRound()
         {
-            playerGold.AddGold(BaseRoundGold);
+            if (playerEconomy != null)
+            {
+                var income = playerEconomy.GrantRoundIncome(playerGold.Gold);
+                playerGold.AddGold(income.TotalGold);
+                Debug.Log($"Round {roundNumber} income: {income}");
+            }
+            else if (playerEconomy?.Rules != null)
+            {
+                playerGold.AddGold(playerEconomy.Rules.baseRoundGold);
+            }
+
             shopService.RefreshShop();
             boardGrid.ClearZone(GridZone.EnemyBoard);
             enemyBoardGenerator.GenerateEnemyBoard(roundNumber);
@@ -31,11 +41,10 @@ namespace NarutoAutoBattle.Core
 
         public void OnCombatFinished(UnitOwner winner)
         {
+            playerEconomy?.RegisterCombatResult(winner == UnitOwner.Player);
+
             if (winner == UnitOwner.Player)
-            {
-                playerGold.AddGold(WinBonusGold);
-                Debug.Log($"Round {roundNumber} won! +{WinBonusGold} bonus gold.");
-            }
+                Debug.Log($"Round {roundNumber} won!");
             else
             {
                 playerLosses++;
@@ -49,6 +58,7 @@ namespace NarutoAutoBattle.Core
         {
             roundNumber = 1;
             playerLosses = 0;
+            playerEconomy?.ResetRun();
         }
     }
 }

@@ -79,8 +79,8 @@ namespace NarutoAutoBattle.Core
                 return;
             }
 
-            SetPhase(GamePhase.Prep);
             roundManager.StartNewRound();
+            SetPhase(GamePhase.Prep);
             dragController.DraggingEnabled = true;
         }
 

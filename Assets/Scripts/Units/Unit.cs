@@ -8,6 +8,7 @@ namespace NarutoAutoBattle.Units
     public class Unit : MonoBehaviour
     {
         const float StarScalePerLevel = 0.15f;
+        const float BaseStarScale = 0.8f;
         const float StatMultiplierPerStar = 1.8f;
         public const float VisualLocalY = -1f;
 
@@ -57,13 +58,14 @@ namespace NarutoAutoBattle.Units
             currentSlot = slot;
 
             if (slot != null)
-                transform.position = slot.WorldPosition;
+                SnapToGround();
         }
 
         public void SetStarLevel(int stars)
         {
             starLevel = Mathf.Clamp(stars, 1, 3);
             ApplyVisuals();
+            SnapToGround();
             PlayMergeAnimation();
         }
 
@@ -77,7 +79,7 @@ namespace NarutoAutoBattle.Units
 
         IEnumerator MergePunchRoutine()
         {
-            var baseScale = Vector3.one * (0.8f + (starLevel - 1) * StarScalePerLevel);
+            var baseScale = Vector3.one * GetStarScale();
             var punchScale = baseScale * 1.35f;
             float duration = 0.25f;
             float elapsed = 0f;
@@ -91,6 +93,7 @@ namespace NarutoAutoBattle.Units
             }
 
             transform.localScale = baseScale;
+            SnapToGround();
             mergeAnimation = null;
         }
 
@@ -136,6 +139,25 @@ namespace NarutoAutoBattle.Units
             return Mathf.Pow(StatMultiplierPerStar, starLevel - 1);
         }
 
+        float GetStarScale()
+        {
+            return BaseStarScale + (starLevel - 1) * StarScalePerLevel;
+        }
+
+        Vector3 GetGroundedPosition(Vector3 slotWorldPosition)
+        {
+            float lift = GetStarScale() - BaseStarScale;
+            return slotWorldPosition + Vector3.up * lift;
+        }
+
+        void SnapToGround()
+        {
+            if (currentSlot == null)
+                return;
+
+            transform.position = GetGroundedPosition(currentSlot.WorldPosition);
+        }
+
         void ApplyVisuals()
         {
             if (visualInstance != null)
@@ -144,7 +166,7 @@ namespace NarutoAutoBattle.Units
                 visualInstance = null;
             }
 
-            transform.localScale = Vector3.one * (0.8f + (starLevel - 1) * StarScalePerLevel);
+            transform.localScale = Vector3.one * GetStarScale();
 
             if (data != null && data.visualPrefab != null)
             {

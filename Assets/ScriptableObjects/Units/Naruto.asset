@@ -23,6 +23,7 @@ MonoBehaviour:
   unitColor: {r: 1, g: 0.55, b: 0.1, a: 1}
   visualPrefab: {fileID: 7253002562556289296, guid: 7d3d8102df07420438dcdc508ba7968d, type: 3}
   visualScale: 1
+  visualOffset: {x: 0, y: 0, z: 0}
   clans:
   - {fileID: 11400000, guid: defc028b51bc66f46b7903015fc2f336, type: 2}
   - {fileID: 11400000, guid: fbef81d3edd3853479e612bc6551c1f3, type: 2}

@@ -72,7 +72,6 @@ namespace NarutoAutoBattle.Board
 
             slot.Occupant = unit;
             unit.SetSlot(slot);
-            unit.transform.position = slot.WorldPosition;
             return true;
         }
 

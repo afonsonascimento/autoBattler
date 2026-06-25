@@ -18,6 +18,7 @@ namespace NarutoAutoBattle.Editor
     {
         const string UnitDataPath = "Assets/ScriptableObjects/Units";
         const string ClanDataPath = "Assets/ScriptableObjects/Clans";
+        const string EconomyRulesPath = "Assets/ScriptableObjects/Economy/EconomyRules.asset";
         const string PrefabPath = "Assets/Prefabs/Units";
         const string ScenePath = "Assets/Scenes/Main.unity";
 
@@ -27,9 +28,10 @@ namespace NarutoAutoBattle.Editor
             EnsureFolders();
             var clans = CreateClanAssets();
             var unitData = CreateUnitDataAssets(clans);
+            var economyRules = CreateEconomyRulesAsset();
             var unitPrefab = CreateUnitPrefab();
             var combatPrefab = CreateCombatUnitPrefab();
-            SetupScene(unitPrefab, combatPrefab, unitData);
+            SetupScene(unitPrefab, combatPrefab, unitData, economyRules);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
             EditorSceneManager.OpenScene(ScenePath);
@@ -41,6 +43,7 @@ namespace NarutoAutoBattle.Editor
             CreateFolder("Assets/ScriptableObjects");
             CreateFolder(UnitDataPath);
             CreateFolder(ClanDataPath);
+            CreateFolder("Assets/ScriptableObjects/Economy");
             CreateFolder("Assets/Prefabs");
             CreateFolder(PrefabPath);
         }
@@ -237,7 +240,18 @@ namespace NarutoAutoBattle.Editor
             return prefab;
         }
 
-        static void SetupScene(GameObject unitPrefab, GameObject combatPrefab, UnitData[] unitData)
+        static EconomyRules CreateEconomyRulesAsset()
+        {
+            var existing = AssetDatabase.LoadAssetAtPath<EconomyRules>(EconomyRulesPath);
+            if (existing != null)
+                return existing;
+
+            var rules = ScriptableObject.CreateInstance<EconomyRules>();
+            AssetDatabase.CreateAsset(rules, EconomyRulesPath);
+            return rules;
+        }
+
+        static void SetupScene(GameObject unitPrefab, GameObject combatPrefab, UnitData[] unitData, EconomyRules economyRules)
         {
             var scene = EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
 
@@ -258,6 +272,7 @@ namespace NarutoAutoBattle.Editor
             var gameManager = GetOrAdd<GameManager>(systemsGo);
             var roundManager = GetOrAdd<RoundManager>(systemsGo);
             var playerGold = GetOrAdd<PlayerGold>(systemsGo);
+            var playerEconomy = GetOrAdd<PlayerEconomy>(systemsGo);
             var shopService = GetOrAdd<ShopService>(systemsGo);
             var sellService = GetOrAdd<UnitSellService>(systemsGo);
             var combatController = GetOrAdd<CombatController>(systemsGo);
@@ -275,6 +290,10 @@ namespace NarutoAutoBattle.Editor
             SetRef(shopService, "unitSpawner", unitSpawner);
             SetRef(shopService, "benchGrid", benchGrid);
             SetRef(shopService, "playerGold", playerGold);
+            SetRef(shopService, "playerEconomy", playerEconomy);
+            SetRef(playerEconomy, "playerGold", playerGold);
+            SetRef(playerEconomy, "rules", economyRules);
+            SetRef(shopService, "playerEconomy", playerEconomy);
             SetRef(sellService, "playerGold", playerGold);
             SetRef(sellService, "gameManager", gameManager);
             SetRef(combatController, "boardGrid", boardGrid);
@@ -282,6 +301,7 @@ namespace NarutoAutoBattle.Editor
             SetRef(combatController, "synergyService", synergyService);
             SetRef(roundManager, "boardGrid", boardGrid);
             SetRef(roundManager, "playerGold", playerGold);
+            SetRef(roundManager, "playerEconomy", playerEconomy);
             SetRef(roundManager, "shopService", shopService);
             SetRef(roundManager, "enemyBoardGenerator", enemyGen);
             SetRef(enemyGen, "boardGrid", boardGrid);
@@ -302,6 +322,7 @@ namespace NarutoAutoBattle.Editor
             SetRef(ui, "gameManager", gameManager);
             SetRef(ui, "shopService", shopService);
             SetRef(ui, "playerGold", playerGold);
+            SetRef(ui, "playerEconomy", playerEconomy);
             SetRef(ui, "synergyService", synergyService);
             SetRef(ui, "dragController", dragController);
             SetRef(synergyService, "boardGrid", boardGrid);

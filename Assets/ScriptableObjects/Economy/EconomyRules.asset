@@ -1,0 +1,51 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6644f5575775b22419e7067122a665bb, type: 3}
+  m_Name: EconomyRules
+  m_EditorClassIdentifier: Assembly-CSharp::NarutoAutoBattle.Economy.EconomyRules
+  baseRoundGold: 5
+  interestGoldStep: 10
+  interestPerStep: 1
+  maxInterest: 5
+  interestGoldCap: 50
+  xpPerRound: 2
+  xpWinBonus: 0
+  totalXpForLevel: 0000000002000000060000000a000000140000002400000038000000
+  streakTiers:
+  - minStreak: 1
+    bonusGold: 1
+  - minStreak: 3
+    bonusGold: 2
+  - minStreak: 5
+    bonusGold: 3
+  shopOddsByLevel:
+  - cost1: 1
+    cost2: 0
+    cost3: 0
+  - cost1: 0.75
+    cost2: 0.25
+    cost3: 0
+  - cost1: 0.55
+    cost2: 0.3
+    cost3: 0.15
+  - cost1: 0.45
+    cost2: 0.33
+    cost3: 0.22
+  - cost1: 0.3
+    cost2: 0.4
+    cost3: 0.3
+  - cost1: 0.24
+    cost2: 0.35
+    cost3: 0.41
+  - cost1: 0.19
+    cost2: 0.3
+    cost3: 0.51
