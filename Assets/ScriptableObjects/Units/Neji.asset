@@ -15,8 +15,8 @@ MonoBehaviour:
   unitId: neji
   displayName: Neji
   cost: 2
-  baseHealth: 55
-  baseAttack: 16
+  baseHealth: 58
+  baseAttack: 17
   attackRange: 2
   attackSpeed: 1.1
   moveSpeed: 3

@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 177207edf957c7341b2b21f961cdb839, type: 3}
+  m_Name: Choji
+  m_EditorClassIdentifier: Assembly-CSharp::NarutoAutoBattle.Units.UnitData
+  unitId: choji
+  displayName: Choji
+  cost: 3
+  baseHealth: 75
+  baseAttack: 14
+  attackRange: 1.2
+  attackSpeed: 0.8
+  moveSpeed: 2.5
+  unitColor: {r: 0.95, g: 0.7, b: 0.3, a: 1}
+  visualPrefab: {fileID: 7003921508116163844, guid: 177dfa9e16a0cbf43a0da697a8429873, type: 3}
+  visualScale: 1
+  visualOffset: {x: 0, y: 0, z: 0}
+  clans:
+  - {fileID: 11400000, guid: eb8867e55f6917743b53365186336dd1, type: 2}
+  - {fileID: 11400000, guid: defc028b51bc66f46b7903015fc2f336, type: 2}
+  jutsuType: 1
+  jutsuName: Human Boulder
+  jutsuCooldown: 5
+  jutsuPower: 1.5
+  jutsuRadius: 2.5

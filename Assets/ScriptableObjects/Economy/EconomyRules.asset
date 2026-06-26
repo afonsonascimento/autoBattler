@@ -18,7 +18,7 @@ MonoBehaviour:
   maxInterest: 5
   interestGoldCap: 50
   xpPerRound: 2
-  xpWinBonus: 0
+  xpWinBonus: 2
   totalXpForLevel: 0000000002000000060000000a000000140000002400000038000000
   streakTiers:
   - minStreak: 1
@@ -31,21 +31,28 @@ MonoBehaviour:
   - cost1: 1
     cost2: 0
     cost3: 0
+    cost4: 0
   - cost1: 0.75
     cost2: 0.25
     cost3: 0
+    cost4: 0
   - cost1: 0.55
     cost2: 0.3
     cost3: 0.15
+    cost4: 0
   - cost1: 0.45
     cost2: 0.33
     cost3: 0.22
+    cost4: 0
   - cost1: 0.3
-    cost2: 0.4
-    cost3: 0.3
-  - cost1: 0.24
-    cost2: 0.35
-    cost3: 0.41
-  - cost1: 0.19
-    cost2: 0.3
-    cost3: 0.51
+    cost2: 0.38
+    cost3: 0.27
+    cost4: 0.05
+  - cost1: 0.22
+    cost2: 0.32
+    cost3: 0.35
+    cost4: 0.11
+  - cost1: 0.17
+    cost2: 0.27
+    cost3: 0.36
+    cost4: 0.2

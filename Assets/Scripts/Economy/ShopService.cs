@@ -128,7 +128,7 @@ namespace NarutoAutoBattle.Economy
             if (unitsByCost.TryGetValue(cost, out var bucket) && bucket.Count > 0)
                 return bucket[UnityEngine.Random.Range(0, bucket.Count)];
 
-            for (int fallback = 1; fallback <= 3; fallback++)
+            for (int fallback = 1; fallback <= EconomyRules.MaxShopCost; fallback++)
             {
                 if (unitsByCost.TryGetValue(fallback, out bucket) && bucket.Count > 0)
                     return bucket[UnityEngine.Random.Range(0, bucket.Count)];

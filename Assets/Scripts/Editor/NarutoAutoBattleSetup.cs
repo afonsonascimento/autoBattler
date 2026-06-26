@@ -85,7 +85,19 @@ namespace NarutoAutoBattle.Editor
                     new ClanData.Threshold { unitCount = 3, attackBonus = 0.35f, healthBonus = 0f }),
                 CreateClan("Nara", "nara", "Nara", new Color(0.55f, 0.35f, 0.15f),
                     new ClanData.Threshold { unitCount = 2, attackBonus = 0.10f, healthBonus = 0.10f },
-                    new ClanData.Threshold { unitCount = 3, attackBonus = 0.20f, healthBonus = 0.20f })
+                    new ClanData.Threshold { unitCount = 3, attackBonus = 0.20f, healthBonus = 0.20f }),
+                CreateClan("Akatsuki", "akatsuki", "Akatsuki", new Color(0.95f, 0.1f, 0.2f),
+                    new ClanData.Threshold { unitCount = 2, attackBonus = 0.25f, healthBonus = 0f },
+                    new ClanData.Threshold { unitCount = 3, attackBonus = 0.45f, healthBonus = 0f }),
+                CreateClan("Sannin", "sannin", "Sannin", new Color(0.85f, 0.45f, 0.1f),
+                    new ClanData.Threshold { unitCount = 2, attackBonus = 0.10f, healthBonus = 0.15f },
+                    new ClanData.Threshold { unitCount = 3, attackBonus = 0.20f, healthBonus = 0.25f }),
+                CreateClan("Jinchuriki", "jinchuriki", "Jinchuriki", new Color(0.75f, 0.2f, 0.85f),
+                    new ClanData.Threshold { unitCount = 2, attackBonus = 0f, healthBonus = 0.20f },
+                    new ClanData.Threshold { unitCount = 3, attackBonus = 0.10f, healthBonus = 0.35f }),
+                CreateClan("InoShikaCho", "inoshikacho", "Ino-Shika-Cho", new Color(0.9f, 0.75f, 0.2f),
+                    new ClanData.Threshold { unitCount = 2, attackBonus = 0.15f, healthBonus = 0f },
+                    new ClanData.Threshold { unitCount = 3, attackBonus = 0.25f, healthBonus = 0.10f })
             };
         }
 
@@ -120,23 +132,52 @@ namespace NarutoAutoBattle.Editor
             var hyuga = clans[3];
             var taijutsu = clans[4];
             var nara = clans[5];
+            var akatsuki = clans[6];
+            var sannin = clans[7];
+            var jinchuriki = clans[8];
+            var inoShikaCho = clans[9];
 
             return new[]
             {
+                // 1-cost
                 CreateUnitWithJutsu("Naruto", "naruto", 1, 80, 12, 1.5f, 1f, 3f, new Color(1f, 0.55f, 0.1f),
-                    JutsuType.Rasengan, "Rasengan", 4f, 1.4f, 2.5f, konoha, team7),
-                CreateUnitWithJutsu("Sasuke", "sasuke", 2, 50, 15, 4f, 1.2f, 3f, new Color(0.2f, 0.25f, 0.7f),
-                    JutsuType.Chidori, "Chidori", 3.5f, 2.5f, 1.5f, konoha, uchiha, team7),
-                CreateUnitWithJutsu("Kakashi", "kakashi", 3, 40, 20, 3f, 0.8f, 2.5f, new Color(0.75f, 0.75f, 0.75f),
-                    JutsuType.LightningBlade, "Lightning Blade", 4.5f, 1.8f, 4f, konoha, team7),
-                CreateUnitWithJutsu("Sakura", "sakura", 2, 45, 18, 1.5f, 1.5f, 4f, new Color(1f, 0.4f, 0.6f),
-                    JutsuType.MysticalPalm, "Mystical Palm", 5f, 1.2f, 0f, konoha, team7),
-                CreateUnitWithJutsu("Neji", "neji", 2, 55, 16, 2f, 1.1f, 3f, new Color(0.9f, 0.9f, 1f),
-                    JutsuType.Rasengan, "Eight Trigrams", 4f, 1.3f, 2f, hyuga, konoha),
+                    JutsuType.Rasengan, "Rasengan", 4f, 1.4f, 2.5f, konoha, team7, jinchuriki),
                 CreateUnitWithJutsu("Rock Lee", "rocklee", 1, 70, 14, 1.2f, 1.8f, 4.5f, new Color(0.15f, 0.55f, 0.2f),
                     JutsuType.Chidori, "Primary Lotus", 5f, 2.8f, 1.2f, taijutsu, konoha),
-                CreateUnitWithJutsu("Shikamaru", "shikamaru", 3, 45, 12, 4f, 0.7f, 2.5f, new Color(0.45f, 0.35f, 0.2f),
-                    JutsuType.LightningBlade, "Shadow Strangle", 5f, 1.5f, 3.5f, nara, konoha)
+                CreateUnitWithJutsu("Tenten", "tenten", 1, 55, 13, 3f, 1.1f, 3f, new Color(0.85f, 0.35f, 0.35f),
+                    JutsuType.LightningBlade, "Weapon Barrage", 4f, 1.6f, 3f, konoha),
+
+                // 2-cost
+                CreateUnitWithJutsu("Sakura", "sakura", 2, 50, 16, 1.5f, 1.5f, 4f, new Color(1f, 0.4f, 0.6f),
+                    JutsuType.MysticalPalm, "Mystical Palm", 5f, 1.2f, 0f, konoha, team7),
+                CreateUnitWithJutsu("Neji", "neji", 2, 58, 17, 2f, 1.1f, 3f, new Color(0.9f, 0.9f, 1f),
+                    JutsuType.Rasengan, "Eight Trigrams", 4f, 1.3f, 2f, hyuga, konoha),
+                CreateUnitWithJutsu("Hinata", "hinata", 2, 52, 15, 2f, 1f, 3f, new Color(0.75f, 0.65f, 1f),
+                    JutsuType.Chidori, "Gentle Step", 4.5f, 2f, 1.5f, hyuga, konoha),
+                CreateUnitWithJutsu("Kiba", "kiba", 2, 55, 16, 1.5f, 1.4f, 4.2f, new Color(0.6f, 0.45f, 0.25f),
+                    JutsuType.Chidori, "Fang Over Fang", 4f, 2.2f, 1.2f, konoha),
+                CreateUnitWithJutsu("Ino", "ino", 2, 48, 14, 3.5f, 0.9f, 2.8f, new Color(0.95f, 0.75f, 0.85f),
+                    JutsuType.LightningBlade, "Mind Disturbance", 5f, 1.4f, 3f, inoShikaCho, konoha),
+                CreateUnitWithJutsu("Shikamaru", "shikamaru", 2, 50, 13, 4f, 0.7f, 2.5f, new Color(0.45f, 0.35f, 0.2f),
+                    JutsuType.LightningBlade, "Shadow Strangle", 5f, 1.5f, 3.5f, nara, inoShikaCho, konoha),
+
+                // 3-cost
+                CreateUnitWithJutsu("Sasuke", "sasuke", 3, 55, 20, 4f, 1.2f, 3f, new Color(0.2f, 0.25f, 0.7f),
+                    JutsuType.Chidori, "Chidori", 3.5f, 2.5f, 1.5f, konoha, uchiha, team7),
+                CreateUnitWithJutsu("Kakashi", "kakashi", 3, 60, 19, 3f, 0.9f, 2.8f, new Color(0.75f, 0.75f, 0.75f),
+                    JutsuType.LightningBlade, "Lightning Blade", 4.5f, 1.8f, 4f, konoha, team7),
+                CreateUnitWithJutsu("Choji", "choji", 3, 75, 14, 1.2f, 0.8f, 2.5f, new Color(0.95f, 0.7f, 0.3f),
+                    JutsuType.Rasengan, "Human Boulder", 5f, 1.5f, 2.5f, inoShikaCho, konoha),
+
+                // 4-cost
+                CreateUnitWithJutsu("Jiraiya", "jiraiya", 4, 85, 22, 2f, 0.9f, 3f, new Color(0.95f, 0.55f, 0.15f),
+                    JutsuType.Rasengan, "Sage Art Rasengan", 4f, 1.8f, 3f, sannin, konoha),
+                CreateUnitWithJutsu("Tsunade", "tsunade", 4, 95, 18, 1.5f, 0.85f, 2.8f, new Color(0.55f, 0.35f, 0.55f),
+                    JutsuType.MysticalPalm, "Creation Rebirth", 5f, 1.5f, 0f, sannin, konoha),
+                CreateUnitWithJutsu("Itachi", "itachi", 4, 65, 26, 4f, 1f, 3f, new Color(0.55f, 0.1f, 0.15f),
+                    JutsuType.LightningBlade, "Amaterasu", 4.5f, 2.2f, 3.5f, akatsuki, uchiha),
+                CreateUnitWithJutsu("Gaara", "gaara", 4, 90, 20, 3.5f, 0.75f, 2.5f, new Color(0.85f, 0.75f, 0.25f),
+                    JutsuType.Rasengan, "Sand Burial", 5f, 1.7f, 3f, jinchuriki)
             };
         }
 
@@ -244,11 +285,25 @@ namespace NarutoAutoBattle.Editor
         {
             var existing = AssetDatabase.LoadAssetAtPath<EconomyRules>(EconomyRulesPath);
             if (existing != null)
+            {
+                ApplyDefaultEconomyRules(existing);
+                EditorUtility.SetDirty(existing);
                 return existing;
+            }
 
             var rules = ScriptableObject.CreateInstance<EconomyRules>();
             AssetDatabase.CreateAsset(rules, EconomyRulesPath);
             return rules;
+        }
+
+        static void ApplyDefaultEconomyRules(EconomyRules rules)
+        {
+            var defaults = ScriptableObject.CreateInstance<EconomyRules>();
+            rules.totalXpForLevel = (int[])defaults.totalXpForLevel.Clone();
+            rules.shopOddsByLevel = new EconomyRules.ShopOdds[defaults.shopOddsByLevel.Length];
+            for (int i = 0; i < defaults.shopOddsByLevel.Length; i++)
+                rules.shopOddsByLevel[i] = defaults.shopOddsByLevel[i];
+            Object.DestroyImmediate(defaults);
         }
 
         static void SetupScene(GameObject unitPrefab, GameObject combatPrefab, UnitData[] unitData, EconomyRules economyRules)

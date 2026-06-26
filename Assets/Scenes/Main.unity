@@ -349,12 +349,21 @@ MonoBehaviour:
   unitSpawner: {fileID: 303858083}
   unitPool:
   - {fileID: 11400000, guid: 08bd74b143be12244890dc8999522595, type: 2}
-  - {fileID: 11400000, guid: ae57d1d117d7ca441a6c164bbd5d384f, type: 2}
-  - {fileID: 11400000, guid: 9015e07dd4189ec45a087b98ba66f458, type: 2}
+  - {fileID: 11400000, guid: 044be31a45316b24d854cb676328bf78, type: 2}
+  - {fileID: 11400000, guid: 489a023e6e80a24499dcc51f4159bd09, type: 2}
   - {fileID: 11400000, guid: 33d8b6630db7681469edf943d22f8773, type: 2}
   - {fileID: 11400000, guid: 4e977611a451dfe4fbbe8a4fab1d3806, type: 2}
-  - {fileID: 11400000, guid: 044be31a45316b24d854cb676328bf78, type: 2}
+  - {fileID: 11400000, guid: 29e929dca20151f4cad292b5a35e1e48, type: 2}
+  - {fileID: 11400000, guid: 1d4d2c921dade7e47a65059e4f5bdd98, type: 2}
+  - {fileID: 11400000, guid: 8886369df17a0854fb537af08477da10, type: 2}
   - {fileID: 11400000, guid: 510d67cac02354a4aa445165f9a8b5ab, type: 2}
+  - {fileID: 11400000, guid: ae57d1d117d7ca441a6c164bbd5d384f, type: 2}
+  - {fileID: 11400000, guid: 9015e07dd4189ec45a087b98ba66f458, type: 2}
+  - {fileID: 11400000, guid: 010ae5620115ec14cb9d5b69cd73c3f2, type: 2}
+  - {fileID: 11400000, guid: c9b06c5f8857d6d439ae20a9554e5d11, type: 2}
+  - {fileID: 11400000, guid: 8c7b913ae66c08646bddf7cd7337d52c, type: 2}
+  - {fileID: 11400000, guid: b1e61936256d19c49942be76d67e3e80, type: 2}
+  - {fileID: 11400000, guid: 01b7f343da80cff45b4f23f156f74724, type: 2}
 --- !u!114 &303858083
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -411,12 +420,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NarutoAutoBattle.Economy.ShopService
   unitPool:
   - {fileID: 11400000, guid: 08bd74b143be12244890dc8999522595, type: 2}
-  - {fileID: 11400000, guid: ae57d1d117d7ca441a6c164bbd5d384f, type: 2}
-  - {fileID: 11400000, guid: 9015e07dd4189ec45a087b98ba66f458, type: 2}
+  - {fileID: 11400000, guid: 044be31a45316b24d854cb676328bf78, type: 2}
+  - {fileID: 11400000, guid: 489a023e6e80a24499dcc51f4159bd09, type: 2}
   - {fileID: 11400000, guid: 33d8b6630db7681469edf943d22f8773, type: 2}
   - {fileID: 11400000, guid: 4e977611a451dfe4fbbe8a4fab1d3806, type: 2}
-  - {fileID: 11400000, guid: 044be31a45316b24d854cb676328bf78, type: 2}
+  - {fileID: 11400000, guid: 29e929dca20151f4cad292b5a35e1e48, type: 2}
+  - {fileID: 11400000, guid: 1d4d2c921dade7e47a65059e4f5bdd98, type: 2}
+  - {fileID: 11400000, guid: 8886369df17a0854fb537af08477da10, type: 2}
   - {fileID: 11400000, guid: 510d67cac02354a4aa445165f9a8b5ab, type: 2}
+  - {fileID: 11400000, guid: ae57d1d117d7ca441a6c164bbd5d384f, type: 2}
+  - {fileID: 11400000, guid: 9015e07dd4189ec45a087b98ba66f458, type: 2}
+  - {fileID: 11400000, guid: 010ae5620115ec14cb9d5b69cd73c3f2, type: 2}
+  - {fileID: 11400000, guid: c9b06c5f8857d6d439ae20a9554e5d11, type: 2}
+  - {fileID: 11400000, guid: 8c7b913ae66c08646bddf7cd7337d52c, type: 2}
+  - {fileID: 11400000, guid: b1e61936256d19c49942be76d67e3e80, type: 2}
+  - {fileID: 11400000, guid: 01b7f343da80cff45b4f23f156f74724, type: 2}
   unitSpawner: {fileID: 303858083}
   benchGrid: {fileID: 344160072}
   playerGold: {fileID: 303858087}

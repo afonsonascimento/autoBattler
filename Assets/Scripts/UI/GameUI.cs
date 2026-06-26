@@ -22,15 +22,22 @@ namespace NarutoAutoBattle.View
 
         int gold;
         GamePhase phase;
-        string combatResultMessage;
         float combatResultTimer;
+        bool showRoundSummary;
+        bool roundSummaryWon;
+        RoundIncomeBreakdown roundSummaryIncome;
         string tooltipText;
         string economyLine = string.Empty;
         GUIStyle headerStyle;
         GUIStyle shopButtonStyle;
         GUIStyle synergyActiveStyle;
         GUIStyle synergyInactiveStyle;
-        GUIStyle resultStyle;
+        GUIStyle resultPanelStyle;
+        GUIStyle resultTitleStyle;
+        GUIStyle resultTitleDefeatStyle;
+        GUIStyle resultTotalStyle;
+        GUIStyle resultLineStyle;
+        GUIStyle resultLineValueStyle;
         GUIStyle sellHighlightStyle;
         GUIStyle tooltipStyle;
 
@@ -109,9 +116,10 @@ namespace NarutoAutoBattle.View
                 var income = gameManager.RoundManager.LastRoundIncome;
                 if (income.TotalGold > 0)
                 {
-                    string prefix = gameManager.LastCombatWon ? "Victory! " : "Defeat. ";
-                    combatResultMessage = prefix + income;
-                    combatResultTimer = 2.5f;
+                    roundSummaryWon = gameManager.LastCombatWon;
+                    roundSummaryIncome = income;
+                    showRoundSummary = true;
+                    combatResultTimer = 3.5f;
                 }
             }
         }
@@ -148,11 +156,70 @@ namespace NarutoAutoBattle.View
             if (!string.IsNullOrEmpty(tooltipText))
                 DrawTooltip(tooltipText);
 
-            if (combatResultTimer > 0f && !string.IsNullOrEmpty(combatResultMessage))
+            DrawRoundSummary();
+        }
+
+        void DrawRoundSummary()
+        {
+            if (!showRoundSummary || combatResultTimer <= 0f)
+                return;
+
+            EnsureStyles();
+
+            const float panelWidth = 380f;
+            const float padding = 24f;
+            const float lineHeight = 32f;
+            float panelHeight = padding * 2f + lineHeight * 6.5f;
+
+            var panelRect = new Rect(
+                Screen.width * 0.5f - panelWidth * 0.5f,
+                Screen.height * 0.28f,
+                panelWidth,
+                panelHeight);
+
+            var overlayColor = new Color(0f, 0f, 0f, 0.5f);
+            var previousColor = GUI.color;
+            GUI.color = overlayColor;
+            GUI.DrawTexture(new Rect(0f, 0f, Screen.width, Screen.height), Texture2D.whiteTexture);
+            GUI.color = previousColor;
+
+            GUI.Box(panelRect, GUIContent.none, resultPanelStyle);
+
+            float contentX = panelRect.x + padding;
+            float contentWidth = panelWidth - padding * 2f;
+            float y = panelRect.y + padding;
+
+            var titleStyle = roundSummaryWon ? resultTitleStyle : resultTitleDefeatStyle;
+            GUI.Label(new Rect(contentX, y, contentWidth, lineHeight + 4f),
+                roundSummaryWon ? "VICTORY!" : "DEFEAT",
+                titleStyle);
+            y += lineHeight + 8f;
+
+            GUI.Label(new Rect(contentX, y, contentWidth, lineHeight),
+                $"+{roundSummaryIncome.TotalGold} Gold",
+                resultTotalStyle);
+            y += lineHeight + 12f;
+
+            DrawIncomeLine(contentX, ref y, contentWidth, lineHeight, "Base income", roundSummaryIncome.BaseGold);
+            DrawIncomeLine(contentX, ref y, contentWidth, lineHeight, "Interest", roundSummaryIncome.InterestGold);
+            DrawIncomeLine(contentX, ref y, contentWidth, lineHeight, "Streak bonus", roundSummaryIncome.StreakGold);
+
+            if (playerEconomy != null)
             {
-                var rect = new Rect(Screen.width * 0.5f - 150f, Screen.height * 0.35f, 300f, 50f);
-                GUI.Box(rect, combatResultMessage, resultStyle);
+                y += 8f;
+                GUI.Label(new Rect(contentX, y, contentWidth, lineHeight),
+                    playerEconomy.GetLevelProgressText(),
+                    resultLineStyle);
             }
+        }
+
+        void DrawIncomeLine(float x, ref float y, float width, float height, string label, int amount)
+        {
+            GUI.Label(new Rect(x, y, width * 0.65f, height), label, resultLineStyle);
+            GUI.Label(new Rect(x + width * 0.35f, y, width * 0.65f, height),
+                $"+{amount}g",
+                resultLineValueStyle);
+            y += height;
         }
 
         void DrawSynergyPanel()
@@ -363,13 +430,62 @@ namespace NarutoAutoBattle.View
                 };
             }
 
-            if (resultStyle == null)
+            if (resultPanelStyle == null)
             {
-                resultStyle = new GUIStyle(GUI.skin.box)
+                resultPanelStyle = new GUIStyle(GUI.skin.box)
+                {
+                    padding = new RectOffset(16, 16, 16, 16)
+                };
+                resultPanelStyle.normal.background = Texture2D.grayTexture;
+            }
+
+            if (resultTitleStyle == null)
+            {
+                resultTitleStyle = new GUIStyle(GUI.skin.label)
+                {
+                    fontSize = 32,
+                    fontStyle = FontStyle.Bold,
+                    alignment = TextAnchor.MiddleCenter,
+                    normal = { textColor = new Color(1f, 0.9f, 0.35f) }
+                };
+            }
+
+            if (resultTitleDefeatStyle == null)
+            {
+                resultTitleDefeatStyle = new GUIStyle(resultTitleStyle)
+                {
+                    normal = { textColor = new Color(1f, 0.45f, 0.4f) }
+                };
+            }
+
+            if (resultTotalStyle == null)
+            {
+                resultTotalStyle = new GUIStyle(GUI.skin.label)
+                {
+                    fontSize = 26,
+                    fontStyle = FontStyle.Bold,
+                    alignment = TextAnchor.MiddleCenter,
+                    normal = { textColor = new Color(0.85f, 1f, 0.55f) }
+                };
+            }
+
+            if (resultLineStyle == null)
+            {
+                resultLineStyle = new GUIStyle(GUI.skin.label)
                 {
                     fontSize = 18,
+                    alignment = TextAnchor.MiddleLeft,
+                    normal = { textColor = new Color(0.9f, 0.9f, 0.9f) }
+                };
+            }
+
+            if (resultLineValueStyle == null)
+            {
+                resultLineValueStyle = new GUIStyle(resultLineStyle)
+                {
+                    alignment = TextAnchor.MiddleRight,
                     fontStyle = FontStyle.Bold,
-                    alignment = TextAnchor.MiddleCenter
+                    normal = { textColor = Color.white }
                 };
             }
 

@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NarutoAutoBattle.Units.UnitData
   unitId: sasuke
   displayName: Sasuke
-  cost: 2
-  baseHealth: 50
-  baseAttack: 15
+  cost: 3
+  baseHealth: 55
+  baseAttack: 20
   attackRange: 4
   attackSpeed: 1.2
   moveSpeed: 3

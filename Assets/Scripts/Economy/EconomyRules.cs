@@ -19,9 +19,12 @@ namespace NarutoAutoBattle.Economy
             [Range(0f, 1f)] public float cost1;
             [Range(0f, 1f)] public float cost2;
             [Range(0f, 1f)] public float cost3;
+            [Range(0f, 1f)] public float cost4;
 
-            public float[] ToArray() => new[] { cost1, cost2, cost3 };
+            public float[] ToArray() => new[] { cost1, cost2, cost3, cost4 };
         }
+
+        public const int MaxShopCost = 4;
 
         [Header("Round Income")]
         [Min(0)] public int baseRoundGold = 5;
@@ -51,13 +54,13 @@ namespace NarutoAutoBattle.Economy
         [Tooltip("One entry per player level. Level 1 uses index 0.")]
         public ShopOdds[] shopOddsByLevel =
         {
-            new() { cost1 = 1f, cost2 = 0f, cost3 = 0f },
-            new() { cost1 = 0.75f, cost2 = 0.25f, cost3 = 0f },
-            new() { cost1 = 0.55f, cost2 = 0.30f, cost3 = 0.15f },
-            new() { cost1 = 0.45f, cost2 = 0.33f, cost3 = 0.22f },
-            new() { cost1 = 0.30f, cost2 = 0.40f, cost3 = 0.30f },
-            new() { cost1 = 0.24f, cost2 = 0.35f, cost3 = 0.41f },
-            new() { cost1 = 0.19f, cost2 = 0.30f, cost3 = 0.51f }
+            new() { cost1 = 1f, cost2 = 0f, cost3 = 0f, cost4 = 0f },
+            new() { cost1 = 0.75f, cost2 = 0.25f, cost3 = 0f, cost4 = 0f },
+            new() { cost1 = 0.55f, cost2 = 0.30f, cost3 = 0.15f, cost4 = 0f },
+            new() { cost1 = 0.45f, cost2 = 0.33f, cost3 = 0.22f, cost4 = 0f },
+            new() { cost1 = 0.30f, cost2 = 0.38f, cost3 = 0.27f, cost4 = 0.05f },
+            new() { cost1 = 0.22f, cost2 = 0.32f, cost3 = 0.35f, cost4 = 0.11f },
+            new() { cost1 = 0.17f, cost2 = 0.27f, cost3 = 0.36f, cost4 = 0.20f }
         };
 
         public int MaxLevel => shopOddsByLevel != null && shopOddsByLevel.Length > 0
@@ -118,7 +121,7 @@ namespace NarutoAutoBattle.Economy
         public float[] GetShopOdds(int level)
         {
             if (shopOddsByLevel == null || shopOddsByLevel.Length == 0)
-                return new[] { 1f, 0f, 0f };
+                return new[] { 1f, 0f, 0f, 0f };
 
             int index = Mathf.Clamp(level - 1, 0, shopOddsByLevel.Length - 1);
             return shopOddsByLevel[index].ToArray();

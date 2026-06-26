@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NarutoAutoBattle.Units.UnitData
   unitId: shikamaru
   displayName: Shikamaru
-  cost: 3
-  baseHealth: 45
-  baseAttack: 12
+  cost: 2
+  baseHealth: 50
+  baseAttack: 13
   attackRange: 4
   attackSpeed: 0.7
   moveSpeed: 2.5
@@ -26,6 +26,7 @@ MonoBehaviour:
   visualOffset: {x: 0, y: 0, z: 0}
   clans:
   - {fileID: 11400000, guid: 3ce2269330b5573438c7db7116df67ca, type: 2}
+  - {fileID: 11400000, guid: eb8867e55f6917743b53365186336dd1, type: 2}
   - {fileID: 11400000, guid: defc028b51bc66f46b7903015fc2f336, type: 2}
   jutsuType: 4
   jutsuName: Shadow Strangle

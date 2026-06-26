@@ -15,8 +15,8 @@ MonoBehaviour:
   unitId: sakura
   displayName: Sakura
   cost: 2
-  baseHealth: 45
-  baseAttack: 18
+  baseHealth: 50
+  baseAttack: 16
   attackRange: 1.5
   attackSpeed: 1.5
   moveSpeed: 4

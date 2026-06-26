@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 177207edf957c7341b2b21f961cdb839, type: 3}
+  m_Name: Hinata
+  m_EditorClassIdentifier: Assembly-CSharp::NarutoAutoBattle.Units.UnitData
+  unitId: hinata
+  displayName: Hinata
+  cost: 2
+  baseHealth: 52
+  baseAttack: 15
+  attackRange: 2
+  attackSpeed: 1
+  moveSpeed: 3
+  unitColor: {r: 0.75, g: 0.65, b: 1, a: 1}
+  visualPrefab: {fileID: 0}
+  visualScale: 1
+  visualOffset: {x: 0, y: 0, z: 0}
+  clans:
+  - {fileID: 11400000, guid: 5305c3f46d579fa47baac00b843e9d53, type: 2}
+  - {fileID: 11400000, guid: defc028b51bc66f46b7903015fc2f336, type: 2}
+  jutsuType: 2
+  jutsuName: Gentle Step
+  jutsuCooldown: 4.5
+  jutsuPower: 2
+  jutsuRadius: 1.5

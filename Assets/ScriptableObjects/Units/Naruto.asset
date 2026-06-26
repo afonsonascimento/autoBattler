@@ -27,6 +27,7 @@ MonoBehaviour:
   clans:
   - {fileID: 11400000, guid: defc028b51bc66f46b7903015fc2f336, type: 2}
   - {fileID: 11400000, guid: fbef81d3edd3853479e612bc6551c1f3, type: 2}
+  - {fileID: 11400000, guid: f4ae4643595f22c4a90a489c4913bb5c, type: 2}
   jutsuType: 1
   jutsuName: Rasengan
   jutsuCooldown: 4
